@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ancient-numerics"
+version = "0.1.0"
+description = "Five primordial mathematical traditions (Gematria, Isopsephy, Abjad, Vedic, Mesopotamian sexagesimal) brought to 2026 AI-tooling standards as composable Python primitives."
+authors = [{ name = "Shannon Brian Kelly" }]
+license = { text = "MIT" }
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0"]
+
+[tool.setuptools.packages.find]
+include = ["ancient_numerics*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
