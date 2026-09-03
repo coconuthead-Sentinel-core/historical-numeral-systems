@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "ancient-numerics"
 version = "0.1.0"
 description = "Five primordial mathematical traditions (Gematria, Isopsephy, Abjad, Vedic, Mesopotamian sexagesimal) brought to 2026 AI-tooling standards as composable Python primitives."
-authors = [{ name = "Shannon Brian Kelly" }]
+authors = [{ name = "Shannon Brian Kelley" }]
 license = { text = "MIT" }
 readme = "README.md"
 requires-python = ">=3.10"
