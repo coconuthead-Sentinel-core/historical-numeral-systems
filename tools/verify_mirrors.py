@@ -115,8 +115,16 @@ def check_bundle(entry: dict) -> tuple[str | None, str]:
     code, out = run(["git", "bundle", "list-heads", str(path)])
     if code != 0 or not out:
         return None, "could not list bundle heads"
-    tip = out.split()[0]
-    return tip, "VERIFIED (bundle intact, hash matches)"
+
+    # list-heads prints every ref, in no guaranteed order, so the branch
+    # must be named rather than assumed to be first. Taking line one would
+    # read whichever topic branch happened to sort ahead of main.
+    wanted = f"refs/heads/{BRANCH}"
+    for line in out.splitlines():
+        parts = line.split(maxsplit=1)
+        if len(parts) == 2 and parts[1].strip() == wanted:
+            return parts[0], "VERIFIED (bundle intact, hash matches)"
+    return None, f"bundle contains no {wanted}"
 
 
 def is_ancestor(maybe_ancestor: str, descendant: str) -> bool:

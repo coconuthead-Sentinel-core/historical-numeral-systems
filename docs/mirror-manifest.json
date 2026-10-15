@@ -1,0 +1,54 @@
+{
+  "_comment": [
+    "Read by tools/verify_mirrors.py. See docs/MIRRORS.md for the protocol.",
+    "Paths are machine-specific to the owner's laptop by design: this file",
+    "records WHERE the copies are, which is local knowledge. The tip commit",
+    "and the SHA-256 are the portable parts, and they are what a recovery",
+    "actually checks."
+  ],
+  "recorded_at": "2026-10-15",
+  "branch": "main",
+
+  "github": {
+    "role": "source of truth",
+    "url": "https://github.com/coconuthead-Sentinel-core/historical-numeral-systems",
+    "independent_of": ["this laptop", "OneDrive", "Google Drive"],
+    "checked_by": "git ls-remote, live"
+  },
+
+  "working_clone": {
+    "role": "laptop + OneDrive cloud (ONE point, two hats)",
+    "path": "C:\\Users\\sbrya\\OneDrive\\Desktop\\Claude AI\\Completed projects\\historical-numeral-systems",
+    "inside_onedrive_sync_root": true,
+    "note": "The laptop copy and the OneDrive copy are the same bytes. A sync fault takes both at once. This is why the bundle below is kept in two separate places.",
+    "checked_by": "git rev-parse HEAD, live"
+  },
+
+  "off_machine_bundle": {
+    "role": "immutable archive, hash-verifiable, clonable",
+    "tip_commit": "0e553935e8e61af086278a0bf3e64aebdda407d8",
+    "sha256": "f7a2f6cba3050128b0db5ab11d8adcdd8d09a810cc31aad81211a03325f072d8",
+    "bytes": 91719,
+    "filename": "historical-numeral-systems-0e55393.bundle",
+
+    "local_copy": "C:\\Users\\sbrya\\source\\sentinels-forge-archives\\historical-numeral-systems-0e55393.bundle",
+    "local_copy_note": "OUTSIDE the OneDrive sync root. Survives a sync fault or a bad sync resolution. Does not survive disk loss.",
+
+    "cloud_copy": "C:\\Users\\sbrya\\OneDrive\\Sentinels Forge Archives\\historical-numeral-systems-0e55393.bundle",
+    "cloud_copy_note": "INSIDE the OneDrive sync root, so it reaches the cloud. Survives disk loss. An immutable file is far less exposed to a sync fault than a working tree, but it shares the OneDrive account.",
+
+    "drive_title": "historical-numeral-systems — verification record 0e55393",
+    "drive_url": "https://drive.google.com/file/d/1oEe2kojJPQfT3UNdRbPQUmCO_VRM-cSh/view",
+    "drive_folder": "https://drive.google.com/drive/folders/17PUXgGOZPzEMsbDJNMQ7MVcGe0HT4_5_",
+    "drive_note": "Google Drive holds a TEXT verification record, not the bundle itself. Pushing the binary through the assistant's context costs roughly 230,000 tokens per archive because the content must pass through twice. The record carries the tip commit and the SHA-256, which is what a cross-check needs; recovery uses GitHub or either bundle copy.",
+
+    "recover_with": "git clone historical-numeral-systems-0e55393.bundle recovered"
+  },
+
+  "known_limits": [
+    "The working clone and the OneDrive bundle share one OneDrive account.",
+    "The working clone and the non-OneDrive bundle share one physical disk.",
+    "GitHub is the only copy independent of both the account and the disk.",
+    "The E: backup drive was not attached when this was recorded. If it returns, a bundle there is a genuine separate-hardware point and the better home for the archive series."
+  ]
+}

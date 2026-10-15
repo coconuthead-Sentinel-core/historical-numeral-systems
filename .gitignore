@@ -19,3 +19,7 @@ Thumbs.db
 desktop.ini
 .vscode/
 .idea/
+
+# Verification record: a point-in-time snapshot, regenerated on demand
+# by tools/make_verification_record.py. Committing it would make it stale.
+record.txt
