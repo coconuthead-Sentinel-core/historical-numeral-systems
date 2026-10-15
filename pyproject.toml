@@ -3,20 +3,40 @@ requires = ["setuptools>=68", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "ancient-numerics"
-version = "0.1.0"
-description = "Five primordial mathematical traditions (Gematria, Isopsephy, Abjad, Vedic, Mesopotamian sexagesimal) brought to 2026 AI-tooling standards as composable Python primitives."
-authors = [{ name = "Shannon Brian Kelly" }]
+name = "historical-numeral-systems"
+version = "1.0.0"
+description = "Four attested systems of numerical notation -- Hebrew, Greek Milesian, and Arabic abjad alphabetic numerals, plus Mesopotamian sexagesimal -- as standard-library Python, with a citation register the test suite enforces."
+authors = [{ name = "Shannon Brian Kelley" }]
 license = { text = "MIT" }
 readme = "README.md"
 requires-python = ">=3.10"
+keywords = [
+    "numeral-systems",
+    "numerical-notation",
+    "alphabetic-numerals",
+    "sexagesimal",
+    "chronograms",
+    "history-of-mathematics",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Education",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Topic :: Scientific/Engineering :: Mathematics",
+    "Topic :: Text Processing :: Linguistic",
+]
 dependencies = []
 
 [project.optional-dependencies]
 dev = ["pytest>=8.0"]
 
+[project.urls]
+Repository = "https://github.com/coconuthead-Sentinel-core/historical-numeral-systems"
+
 [tool.setuptools.packages.find]
-include = ["ancient_numerics*"]
+include = ["numeral_systems*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

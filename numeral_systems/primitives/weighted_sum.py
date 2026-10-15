@@ -1,4 +1,4 @@
-"""Weighted sum — positional weighted addition (used by isopsephy + abjad)."""
+"""Weighted sum -- positional weighted addition."""
 from __future__ import annotations
 
 

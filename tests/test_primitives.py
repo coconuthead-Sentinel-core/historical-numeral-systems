@@ -1,6 +1,6 @@
 """Tests for the three reusable primitives."""
 import pytest
-from ancient_numerics.primitives import (
+from numeral_systems.primitives import (
     digital_root, digital_root_steps, weighted_sum,
     to_base, from_base, sexagesimal_string,
 )
