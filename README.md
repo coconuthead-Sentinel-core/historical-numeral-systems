@@ -273,9 +273,12 @@ historical-numeral-systems/
 ├── .github/workflows/ci.yml
 ├── docs/
 │   ├── METHOD.md             ← how claims are controlled, and the limits
-│   └── SOURCES.md            ← generated from the register
+│   ├── MIRRORS.md            ← the three copies and how to check them
+│   ├── SOURCES.md            ← generated from the register
+│   └── mirror-manifest.json
 ├── tools/
-│   └── generate_sources_doc.py
+│   ├── generate_sources_doc.py
+│   └── verify_mirrors.py
 ├── numeral_systems/
 │   ├── __init__.py
 │   ├── codex.py              ← unified API
@@ -299,6 +302,18 @@ historical-numeral-systems/
     ├── test_codex.py
     └── test_sources.py
 ```
+
+## Mirrors
+
+This repository is kept in three places: **GitHub** (the source of truth), a
+**laptop working clone**, and an **off-machine `git bundle` in Google Drive**.
+`python tools/verify_mirrors.py` checks that they agree and distinguishes an
+archive that is merely *behind* from one that has genuinely *diverged*.
+
+[`docs/MIRRORS.md`](docs/MIRRORS.md) has the protocol, the recovery order for
+when GitHub goes sideways, and the known limits — including the important one:
+the laptop clone lives inside the OneDrive sync root, so the laptop and cloud
+copies are **one point wearing two hats**, not two.
 
 ## License
 
