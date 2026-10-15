@@ -5,10 +5,10 @@
 > as standard-library Python, with a citation register that the test suite
 > enforces.
 
-![Status](https://img.shields.io/badge/status-public-success)
+[![CI](https://github.com/coconuthead-Sentinel-core/historical-numeral-systems/actions/workflows/ci.yml/badge.svg)](https://github.com/coconuthead-Sentinel-core/historical-numeral-systems/actions/workflows/ci.yml)
 ![License](https://img.shields.io/badge/license-MIT-green)
-![Python](https://img.shields.io/badge/python-3.10%2B-blue)
-![Tests](https://img.shields.io/badge/tests-375%20passing-brightgreen)
+![Python](https://img.shields.io/badge/python-3.10%20–%203.13-blue)
+![Dependencies](https://img.shields.io/badge/runtime%20dependencies-none-brightgreen)
 
 ---
 
@@ -82,7 +82,12 @@ more than one that appears never to have been wrong.
   the tables matched none of them. They were removed; the letter-sum of a
   Latin string is now correctly zero.
 
-`numeral_systems.classroom.print_retired()` prints this record from code.
+`numeral_systems.classroom.print_retired()` prints this record from code, and
+[`CHANGELOG.md`](CHANGELOG.md) itemises every removal and rename.
+
+The mechanism added so this cannot recur quietly is described in
+[`docs/METHOD.md`](docs/METHOD.md): claims are enumerated, citations are
+structured, and a test enforces the join.
 
 ## Install
 
@@ -191,13 +196,35 @@ print(classroom.print_retired())         # what was removed on verification
 Every lesson names its claim keys, and the suite fails the build if a key has
 no entry in the register. A lesson cannot assert something unsourced.
 
-## Sources
+## Sources, and how far they were checked
 
-`numeral_systems.sources` holds the register. Each entry carries a tier —
-`scholarly`, `reference`, `collection` or `popular` — so a reader can weigh it,
-and a test enforces that **no claim rests on a popular source alone**. The
-three most contestable claims are additionally required to carry a scholarly
-source.
+`numeral_systems.sources` holds the register. Every historical claim the
+library makes is declared there once and referenced by key, and
+[`tests/test_sources.py`](tests/test_sources.py) fails the build if a claim
+has no citation, if a citation names a claim nobody makes, or if a claim
+rests on a popular-tier source alone. The full design, and its limits, are in
+[`docs/METHOD.md`](docs/METHOD.md).
+
+Each citation carries **two** labels, deliberately not collapsed into one:
+
+- **tier** — what kind of source it is: `scholarly`, `reference`,
+  `collection`, `popular`.
+- **verification** — how far *this release* actually checked it:
+  `consulted` (read directly), `bibliographic` (details confirmed and the
+  source is the recognised authority, but its pages were **not** read for
+  this release), or `reported` (known only through secondary summaries).
+
+**Most entries here are `bibliographic`, and the library says so rather than
+implying otherwise.** A correct citation to the right book is still,
+implicitly, a claim about one's own diligence, and separating the two axes
+stops that claim from being made by accident. `sources.unverified_claims()`
+lists every claim that no directly-read source supports, and
+`sources.reading_list()` prints the books that would close the gap. Both
+appear in [`docs/SOURCES.md`](docs/SOURCES.md) under *Open reading list*.
+
+The one exception is the Unicode Standard, marked `consulted`: every code
+point this library hard-codes also round-trips in the test suite, so the
+Greek assignments are checked by execution as well as by citation.
 
 The spine of the library is:
 
@@ -223,22 +250,32 @@ Run `print(codex.bibliography())` for the full register with notes.
 pytest -q
 ```
 
-**375 test cases pass** across four files. The count is inflated by
-parametrization — `test_systems.py` round-trips each system across sampled
-ranges — so treat it as coverage breadth rather than as 375 distinct
-assertions. `tests/test_sources.py` is the static gate on citations, and
-several tests in `test_systems.py` and `test_codex.py` are labelled in their
-docstrings as regression guards against the v0.1.0 defects listed above.
+**383 test cases pass** across four files, on Python 3.10 through 3.13 in CI.
+The count is inflated by parametrization — `test_systems.py` round-trips each
+system across sampled ranges — so treat it as coverage breadth rather than as
+383 distinct assertions. `tests/test_sources.py` is the static gate on
+citations, and several tests in `test_systems.py` and `test_codex.py` are
+labelled in their docstrings as regression guards against the v0.1.0 defects
+listed above.
+
+CI additionally runs the citation gate as its own step, in case the suite is
+ever skipped or renamed, and diffs `docs/SOURCES.md` against a fresh
+generation so the document cannot drift from the register.
 
 ## Project structure
 
 ```
 historical-numeral-systems/
 ├── README.md
+├── CHANGELOG.md
 ├── LICENSE
 ├── pyproject.toml
+├── .github/workflows/ci.yml
 ├── docs/
-│   └── SOURCES.md
+│   ├── METHOD.md             ← how claims are controlled, and the limits
+│   └── SOURCES.md            ← generated from the register
+├── tools/
+│   └── generate_sources_doc.py
 ├── numeral_systems/
 │   ├── __init__.py
 │   ├── codex.py              ← unified API

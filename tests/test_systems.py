@@ -154,12 +154,23 @@ def test_arabic_declares_which_order_it_implements():
 
 
 def test_arabic_matches_hebrew_up_to_four_hundred():
-    """The documented relationship between the two series."""
-    for value in (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 20, 100, 200, 400):
-        arabic_letters = [c for c, v in arabic.VALUES.items() if v == value]
-        hebrew_letters = [c for c, v in hebrew.VALUES.items() if v == value]
-        assert arabic_letters, f"abjad has no letter worth {value}"
-        assert hebrew_letters, f"hebrew has no letter worth {value}"
+    """The documented relationship, tested as set equality.
+
+    Claim key: abjad-decimal-structure. The two series carry the SAME 22
+    values up to 400 -- nine units, nine tens, four hundreds -- so the
+    test compares the value sets rather than spot-checking a few.
+    """
+    hebrew_values = set(hebrew.VALUES.values())
+    arabic_values = {v for v in arabic.VALUES.values() if v <= 400}
+    assert hebrew_values == arabic_values
+    assert len(hebrew_values) == 22
+
+
+def test_arabic_extends_past_hebrew_to_one_thousand():
+    """Where the two series part company: the extra Arabic letters."""
+    beyond = sorted(v for v in arabic.VALUES.values() if v > 400)
+    assert beyond == [500, 600, 700, 800, 900, 1000]
+    assert max(hebrew.VALUES.values()) == 400
 
 
 def test_arabic_reaches_one_thousand():

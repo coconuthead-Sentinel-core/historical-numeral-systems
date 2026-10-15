@@ -63,6 +63,67 @@ def test_the_three_contested_claims_rest_on_scholarly_sources():
         assert "scholarly" in tiers, f"{claim!r} lacks a scholarly source"
 
 
+def test_every_citation_declares_a_verification_level():
+    """Each source must say how far this release actually checked it."""
+    for key, entry in sources.CITATIONS.items():
+        assert "verification" in entry, f"{key} declares no verification level"
+        assert entry["verification"] in sources.VERIFICATION_LEVELS, (
+            f"{key} has verification {entry['verification']!r}"
+        )
+
+
+def test_tiers_come_from_the_declared_list():
+    for key, entry in sources.CITATIONS.items():
+        assert entry["tier"] in sources.TIERS, f"{key} has tier {entry['tier']!r}"
+
+
+def test_a_bibliographic_source_says_so_in_its_note():
+    """A source whose pages were not read must disclose that in prose.
+
+    The structured field alone is not enough: a reader skimming the
+    bibliography sees the note, so the note has to carry it too.
+    """
+    for key, entry in sources.CITATIONS.items():
+        if entry["verification"] != "bibliographic":
+            continue
+        note = entry.get("note", "").lower()
+        assert sources.BIBLIOGRAPHIC_DISCLOSURE.lower() in note, (
+            f"{key} is bibliographic but its note omits the required "
+            f"disclosure: {sources.BIBLIOGRAPHIC_DISCLOSURE!r}"
+        )
+
+
+def test_unverified_claims_are_published_not_hidden():
+    """The open reading list must be reachable and non-empty here.
+
+    If this ever becomes empty, every claim rests on a directly-read
+    source, and that is worth noticing rather than silently passing.
+    """
+    unverified = sources.unverified_claims()
+    assert isinstance(unverified, list)
+    for claim in unverified:
+        assert claim in sources.CLAIMS
+
+
+def test_reading_list_names_every_unread_source():
+    text = sources.reading_list()
+    for claim in sources.unverified_claims():
+        for src in sources.sources_for(claim):
+            if src["verification"] != "consulted":
+                assert f"[{src['key']}]" in text
+
+
+def test_execution_checked_claims_all_exist():
+    unknown = [c for c in sources.EXECUTION_CHECKED if c not in sources.CLAIMS]
+    assert unknown == [], f"EXECUTION_CHECKED names unknown claims: {unknown}"
+
+
+def test_bibliography_shows_the_verification_level():
+    text = sources.bibliography()
+    for entry in sources.CITATIONS.values():
+        assert entry["verification"] in text
+
+
 def test_bibliography_renders_every_citation():
     text = sources.bibliography()
     for key in sources.CITATIONS:

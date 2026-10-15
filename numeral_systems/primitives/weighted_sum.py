@@ -1,4 +1,11 @@
-"""Weighted sum -- positional weighted addition."""
+"""Weighted sum -- positional weighted addition.
+
+A general-purpose primitive, exported for callers building their own
+positional schemes. Nothing inside this library consumes it: the four
+implemented systems either sum unweighted letter values (the three
+alphabetic ones) or use ``base_n`` for place arithmetic (sexagesimal).
+Stated plainly so a reader does not go hunting for the call site.
+"""
 from __future__ import annotations
 
 

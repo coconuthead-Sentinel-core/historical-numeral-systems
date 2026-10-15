@@ -2,11 +2,16 @@
 Greek alphabetic numerals -- the Milesian (also Ionian, Alexandrian) system.
 
 An ADDITIVE DECIMAL numeral system. Twenty-seven letter values in three
-ranks of nine:
+ranks of nine. Letters are named in full below, because transliterating
+them collides: epsilon and eta both give "e", omicron and omega both
+give "o".
 
-    units      a 1   b 2   g 3   d 4   e 5   STIGMA 6   z 7   e 8   th 9
-    tens       i 10  k 20  l 30  m 40  n 50  x 60  o 70  p 80  KOPPA 90
-    hundreds   r 100 s 200 t 300 u 400 ph 500 ch 600 ps 700 o 800 SAMPI 900
+    units       1 alpha     2 beta     3 gamma    4 delta    5 epsilon
+                6 STIGMA    7 zeta     8 eta      9 theta
+    tens       10 iota     20 kappa   30 lambda  40 mu      50 nu
+               60 xi       70 omicron 80 pi      90 KOPPA
+    hundreds  100 rho     200 sigma  300 tau    400 upsilon
+              500 phi     600 chi    700 psi    800 omega  900 SAMPI
 
 A number is the SUM of its letters, so 241 is written sigma-mu-alpha
 (200 + 40 + 1). Claim key: ``greek-milesian-structure``.

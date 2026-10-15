@@ -6,18 +6,46 @@ Every historical claim made anywhere in this package cites a key from
 no citation key, or a key with no entry here, fails the build. This is the
 mechanism, not the promise -- an uncited claim cannot ship.
 
-Each entry carries a ``tier`` so a reader can weigh it:
+TWO AXES, DELIBERATELY SEPARATE
+
+``tier`` says what KIND of source it is:
 
     "scholarly"  peer-reviewed or university-press monograph
     "reference"  specialist encyclopaedia or standards body
     "collection" a museum or national library holding primary material
-    "popular"    general-audience source; used only for orientation,
-                 never as the sole support for a claim
+    "popular"    general-audience source; may corroborate, never carry a
+                 claim alone
 
-Claims resting only on "popular" sources are marked UNSETTLED in the text
-that makes them, and say so in plain words rather than asserting.
+``verification`` says HOW FAR THIS RELEASE ACTUALLY CHECKED IT:
+
+    "consulted"     the source text was read directly while preparing
+                    this release
+    "bibliographic" the citation's details were confirmed and the source
+                    is the recognised authority for the claim, but its
+                    pages were NOT read while preparing this release
+    "reported"      known here only through secondary summaries
+
+Most entries below are "bibliographic". That is stated rather than
+implied, because a citation can be correct and still be a claim about
+one's own diligence. A reader who wants page-level confirmation has the
+exact editions to check, and ``unverified_claims()`` lists every claim
+that no directly-read source supports.
+
+This is the honest position for a library assembled without a research
+library at hand. It is not a substitute for reading the books, and the
+register says which books still want reading.
+
+Citation style throughout: Chicago notes-bibliography, author-first.
 """
 from __future__ import annotations
+
+VERIFICATION_LEVELS = ("consulted", "bibliographic", "reported")
+
+# Every "bibliographic" entry must repeat this sentence in its note, so a
+# reader skimming the bibliography sees the limitation and not only the
+# structured field. Enforced by tests/test_sources.py.
+BIBLIOGRAPHIC_DISCLOSURE = "Not directly examined for this release."
+TIERS = ("scholarly", "reference", "collection", "popular")
 
 
 CITATIONS: dict[str, dict] = {
@@ -26,6 +54,7 @@ CITATIONS: dict[str, dict] = {
     # ------------------------------------------------------------------
     "chrisomalis2010": {
         "tier": "scholarly",
+        "verification": "bibliographic",
         "text": (
             "Chrisomalis, Stephen. Numerical Notation: A Comparative "
             "History. Cambridge: Cambridge University Press, 2010. "
@@ -36,7 +65,9 @@ CITATIONS: dict[str, dict] = {
             "across roughly 5,500 years. Originated as the author's PhD "
             "thesis at McGill University; the author is at Wayne State "
             "University. This is the standard comparative reference for "
-            "every system in this package."
+            "every system in this package. Not directly examined for this "
+            "release. The structural claims it is cited for are the ones a "
+            "reader should check against it first."
         ),
         "supports": [
             "alphabetic-numerals-are-numeral-systems",
@@ -48,11 +79,15 @@ CITATIONS: dict[str, dict] = {
     },
     "chrisomalis2021": {
         "tier": "scholarly",
+        "verification": "bibliographic",
         "text": (
             "Chrisomalis, Stephen. Reckonings: Numerals, Cognition, and "
             "History. Cambridge, MA: MIT Press, 2021."
         ),
-        "note": "Cognitive and historical analysis of numeral systems.",
+        "note": (
+            "Cognitive and historical analysis of numeral systems. "
+            "Not directly examined for this release."
+        ),
         "supports": ["notation-is-not-interpretation"],
     },
     # ------------------------------------------------------------------
@@ -60,15 +95,17 @@ CITATIONS: dict[str, dict] = {
     # ------------------------------------------------------------------
     "dudley1997": {
         "tier": "scholarly",
+        "verification": "bibliographic",
         "text": (
             "Dudley, Underwood. Numerology: Or, What Pythagoras Wrought. "
             "Washington, DC: Mathematical Association of America, 1997."
         ),
         "note": (
-            "A mathematician's history and critique of numerology. The "
-            "source for the finding that the modern name-and-birth-date "
-            "method has no documented basis in the Pythagorean school, "
-            "and for L. Dow Balliett's role in originating it."
+            "A mathematician's history and critique of numerology, and "
+            "the standard academic treatment. Cited for the finding that "
+            "the modern name-and-birth-date method has no documented "
+            "basis in the Pythagorean school, and for L. Dow Balliett's "
+            "role in originating it. Not directly examined for this release."
         ),
         "supports": [
             "life-path-is-modern",
@@ -81,6 +118,7 @@ CITATIONS: dict[str, dict] = {
     # ------------------------------------------------------------------
     "plofker2009": {
         "tier": "scholarly",
+        "verification": "bibliographic",
         "text": (
             "Plofker, Kim. Mathematics in India. Princeton: Princeton "
             "University Press, 2009."
@@ -89,22 +127,26 @@ CITATIONS: dict[str, dict] = {
             "The standard history of Indian mathematics. Cited here for "
             "the documented record of Indian numeration, and as the "
             "scholarly counterweight to systems marketed as 'Vedic' "
-            "whose content does not appear in the Vedic corpus."
+            "whose content does not appear in the Vedic corpus. Not "
+            "directly examined for this release."
         ),
         "supports": ["vedic-attribution-unsupported"],
     },
     "murthy2005": {
         "tier": "scholarly",
+        "verification": "reported",
         "text": (
             "Murthy, S. S. N. 'Number Symbolism in the Vedas.' Electronic "
             "Journal of Vedic Studies 12, no. 3 (2005)."
         ),
         "note": (
-            "Examines number symbolism in the Vedic corpus. States that "
-            "the extent of Vedic influence on modern numerology is not "
-            "known -- a gap in the record, which is why this library "
-            "treats the 'Vedic numerology' label as unsupported rather "
-            "than as disproven."
+            "Examines number symbolism in the Vedic corpus. Reported to "
+            "state that the extent of Vedic influence on modern "
+            "numerology is not known -- a gap in the record, which is why "
+            "this library treats the 'Vedic numerology' label as "
+            "unsupported rather than as disproven. Known here through "
+            "secondary summary; the article is open access and should be "
+            "read directly before the claim is strengthened."
         ),
         "supports": ["vedic-attribution-unsupported"],
     },
@@ -113,25 +155,62 @@ CITATIONS: dict[str, dict] = {
     # ------------------------------------------------------------------
     "iranica-chronograms": {
         "tier": "reference",
+        "verification": "reported",
         "text": (
             "'Chronograms' (madda tarikh). Encyclopaedia Iranica. "
             "https://www.iranicaonline.org/"
         ),
         "note": (
-            "Documents the Persian chronogram tradition: early poets wrote "
-            "years out in words; later poets used abjad letter values, and "
-            "from around the turn of the 14th century organised those "
-            "values into meaningful words and phrases, a technique called "
-            "hisab al-jummal. Mas'ud-e Sa'd-e Salman (d. 1121) is an "
-            "attested early example."
+            "Documents the Persian chronogram tradition: early poets "
+            "wrote years out in words; later poets used abjad letter "
+            "values, and from around the turn of the 14th century "
+            "organised those values into meaningful words and phrases, a "
+            "technique called hisab al-jummal. Mas'ud-e Sa'd-e Salman "
+            "(d. 1121) is an attested early example, encoding 469 AH. "
+            "Known here through secondary summary of the entry."
         ),
         "supports": ["chronograms-attested", "chronogram-phrase-era"],
+    },
+    # ------------------------------------------------------------------
+    # Readability -- the one quantitative claim this library makes about text
+    # ------------------------------------------------------------------
+    "flesch1948": {
+        "tier": "scholarly",
+        "verification": "bibliographic",
+        "text": (
+            "Flesch, Rudolf. 'A New Readability Yardstick.' Journal of "
+            "Applied Psychology 32, no. 3 (1948): 221-33."
+        ),
+        "note": (
+            "Origin of the Reading Ease formula implemented here. The "
+            "formula's coefficients are long-standardised and were taken "
+            "from the standard statement of it. Not directly examined for "
+            "this release."
+        ),
+        "supports": ["readability-formulas-are-published"],
+    },
+    "kincaid1975": {
+        "tier": "scholarly",
+        "verification": "bibliographic",
+        "text": (
+            "Kincaid, J. Peter, Robert P. Fishburne, Richard L. Rogers "
+            "and Brad S. Chissom. 'Derivation of New Readability Formulas "
+            "for Navy Enlisted Personnel.' Naval Technical Training "
+            "Command, Research Branch Report 8-75, 1975."
+        ),
+        "note": (
+            "Origin of the Flesch-Kincaid Grade Level formula, likewise "
+            "taken from its standard statement. Not directly examined for "
+            "this release."
+        ),
+        "supports": ["readability-formulas-are-published"],
     },
     # ------------------------------------------------------------------
     # Standards
     # ------------------------------------------------------------------
     "unicode": {
         "tier": "reference",
+        "verification": "consulted",
         "text": (
             "The Unicode Standard. Unicode Consortium. "
             "https://www.unicode.org/versions/latest/"
@@ -139,60 +218,52 @@ CITATIONS: dict[str, dict] = {
         "note": (
             "Normative source for the code points of the three Greek "
             "numeral-only letters -- stigma (U+03DB), koppa (U+03DF) and "
-            "sampi (U+03E1) -- and of their archaic alphabetic forms."
+            "sampi (U+03E1) -- and of their archaic alphabetic forms. "
+            "Every code point this library hard-codes round-trips in the "
+            "test suite, so the assignment is checked by execution as "
+            "well as by citation."
         ),
         "supports": ["greek-milesian-structure", "greek-obsolete-letters"],
-    },
-    # ------------------------------------------------------------------
-    # Readability -- the one quantitative claim this library makes about text
-    # ------------------------------------------------------------------
-    "flesch1948": {
-        "tier": "scholarly",
-        "text": (
-            "Flesch, Rudolf. 'A New Readability Yardstick.' Journal of "
-            "Applied Psychology 32, no. 3 (1948): 221-33."
-        ),
-        "note": "Origin of the Reading Ease formula implemented here.",
-        "supports": ["readability-formulas-are-published"],
-    },
-    "kincaid1975": {
-        "tier": "scholarly",
-        "text": (
-            "Kincaid, J. Peter, Robert P. Fishburne, Richard L. Rogers and "
-            "Brad S. Chissom. 'Derivation of New Readability Formulas for "
-            "Navy Enlisted Personnel.' Naval Technical Training Command, "
-            "Research Branch Report 8-75, 1975."
-        ),
-        "note": "Origin of the Flesch-Kincaid Grade Level formula.",
-        "supports": ["readability-formulas-are-published"],
     },
     # ------------------------------------------------------------------
     # Collections holding the primary material
     # ------------------------------------------------------------------
     "britishmuseum": {
         "tier": "collection",
+        "verification": "bibliographic",
         "text": "The British Museum, London. Mesopotamian collection.",
         "note": (
             "Holds cuneiform mathematical tablets. Following the "
             "mid-19th-century Mesopotamian excavations, the bulk of this "
             "material came to rest in the British Museum, the Louvre and "
-            "Berlin, and in university collections."
+            "Berlin, and in university collections. No object numbers "
+            "are asserted here; the collection databases are the place "
+            "to cite specific tablets. Not directly examined for "
+            "this release."
         ),
         "supports": ["sexagesimal-primary-material"],
     },
     "louvre": {
         "tier": "collection",
+        "verification": "bibliographic",
         "text": "Musee du Louvre, Paris. Near Eastern Antiquities.",
-        "note": "Holds Mesopotamian primary material, including tablets.",
+        "note": (
+            "Holds Mesopotamian primary material, including tablets. "
+            "Not directly examined for this release."
+        ),
         "supports": ["sexagesimal-primary-material"],
     },
     "vorderasiatisches": {
         "tier": "collection",
+        "verification": "bibliographic",
         "text": (
-            "Vorderasiatisches Museum (Pergamonmuseum), Staatliche Museen "
-            "zu Berlin."
+            "Vorderasiatisches Museum (Pergamonmuseum), Staatliche "
+            "Museen zu Berlin."
         ),
-        "note": "Holds one of the major cuneiform collections.",
+        "note": (
+            "Holds one of the major cuneiform collections. Not "
+            "directly examined for this release."
+        ),
         "supports": ["sexagesimal-primary-material"],
     },
 }
@@ -262,6 +333,27 @@ CLAIMS: dict[str, str] = {
     ),
 }
 
+# Claims the code additionally proves by execution, independent of any
+# citation. Named here so the distinction is explicit: a test can confirm
+# that a table is internally consistent and round-trips, which is not the
+# same as confirming it matches the historical record.
+EXECUTION_CHECKED: dict[str, str] = {
+    "greek-obsolete-letters": (
+        "tests/test_systems.py round-trips 6, 90, 900 and 96 through the "
+        "encoder and decoder, so the code-point assignments are checked "
+        "by execution as well as by citation."
+    ),
+    "sexagesimal-positional": (
+        "tests/test_systems.py verifies every digit 0-59 decomposes into "
+        "at most five tens wedges and nine units wedges and recomposes "
+        "exactly, so the sub-base claim is checked by execution."
+    ),
+    "readability-formulas-are-published": (
+        "tests/test_codex.py verifies the formulas are deterministic and "
+        "monotone in difficulty."
+    ),
+}
+
 
 def sources_for(claim: str) -> list[dict]:
     """Every citation supporting ``claim``, in register order.
@@ -289,13 +381,47 @@ def orphan_supports() -> list[str]:
     return sorted(referenced - set(CLAIMS))
 
 
+def unverified_claims() -> list[str]:
+    """Claims no directly-read source supports.
+
+    These are NOT errors. They are the library's open reading list: each
+    rests on a recognised authority whose pages were not read while
+    preparing this release. Published deliberately rather than hidden.
+    """
+    out = []
+    for claim in CLAIMS:
+        levels = {s["verification"] for s in sources_for(claim)}
+        if "consulted" not in levels:
+            out.append(claim)
+    return sorted(out)
+
+
+def reading_list() -> str:
+    """The sources that would upgrade a claim from cited to read."""
+    wanted: dict[str, list[str]] = {}
+    for claim in unverified_claims():
+        for src in sources_for(claim):
+            if src["verification"] != "consulted":
+                wanted.setdefault(src["key"], []).append(claim)
+    lines = ["Sources not read while preparing this release:", ""]
+    for key, claims in sorted(wanted.items()):
+        lines.append(f"[{key}] {CITATIONS[key]['text']}")
+        lines.append(f"    verification: {CITATIONS[key]['verification']}")
+        for claim in sorted(claims):
+            lines.append(f"    - would confirm: {claim}")
+        lines.append("")
+    return "\n".join(lines).rstrip()
+
+
 def bibliography(tier: str | None = None) -> str:
     """The register as a readable block, optionally filtered by tier."""
     lines: list[str] = []
     for key, entry in sorted(CITATIONS.items()):
         if tier is not None and entry["tier"] != tier:
             continue
-        lines.append(f"[{key}] ({entry['tier']})")
+        lines.append(
+            f"[{key}] ({entry['tier']}; {entry['verification']})"
+        )
         lines.append(f"    {entry['text']}")
         if entry.get("note"):
             lines.append(f"    {entry['note']}")

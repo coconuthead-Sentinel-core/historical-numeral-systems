@@ -1,0 +1,109 @@
+# Changelog
+
+All notable changes to this project are documented here. Format follows
+[Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions follow
+[Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [1.0.0] — 2026-10-14
+
+A correctness release. The library's historical framing was wrong and four
+functional defects were hiding underneath it. Both are fixed, and the errors
+are published rather than quietly removed.
+
+This is a **breaking change**: functions were removed, the package was
+renamed, and the subject matter was re-scoped.
+
+### Removed
+
+- **Modern numerology.** `life_number`, `life_path_number`, `soul_number`,
+  `destiny_number` and `number_meaning` (planetary correspondences). These
+  were described as classical, Vedic and Pythagorean. None of those
+  attributions survives verification. See `interpretive.py` for the dating
+  and the sources, and `classroom.print_retired()` for the record.
+- **`complexity_score`.** Replaced by `readability`, which uses published
+  formulas with named authors.
+- **`chronogram_year()`.** It returned the current calendar year and never
+  touched an abjad value.
+- **`fingerprint`.** Renamed to `letter_sums`, which is what it computes.
+- **The Latin transliteration tables.** Ad hoc and matching no romanization
+  standard. The letter-sum of a Latin string is now correctly zero.
+
+### Fixed
+
+- **The Greek Milesian table was missing three letters.** The system needs
+  27 values and the Greek alphabet supplies 24, so **stigma (6), koppa (90)
+  and sampi (900)** carry the remainder. All three were absent, which made
+  6, 90, 900 and every number containing them unrepresentable. Guarded by
+  named regression tests.
+- **`complexity_score` inverted its own bands**, returning `GREEN` — its most
+  permissive label — for its most complex input.
+- **`complexity_score` was contaminated by noise.** It added the gematria sum
+  modulo 7, an arbitrary swing of 0 to 6 on a 1-to-10 scale, so two texts of
+  identical shape scored differently.
+- **`glyph_id` claimed content fingerprinting from letter-sums.** Letter-sums
+  are order-independent, so anagrams collided by construction. Now BLAKE2b,
+  order-sensitive, and it publishes its own birthday bound via
+  `collision_probability`.
+- **Sexagesimal origin stated as fact.** The many-divisors explanation was
+  asserted as the Mesopotamians' motive. The historical origin is disputed;
+  `terminates()` now states the divisor property as a property.
+
+### Changed
+
+- **Package renamed** `ancient_numerics` → `numeral_systems`, matching the
+  repository name and no longer asserting "ancient" of modern material.
+- **Gematria and isopsephy moved out of the systems package** into
+  `interpretive.py`. They are interpretive practices, not numeral systems.
+- **Syllable counting moved** from "Sanskrit prosody" to `readability.py`,
+  under the Flesch (1948) and Flesch-Kincaid (1975) formulas it serves.
+- **Chronograms moved to their own module.** A chronogram has a checkable
+  answer, which separates it from interpretation.
+- **Greek docstring table now names letters in full.** Transliteration
+  collided: epsilon and eta both gave "e", omicron and omega both gave "o".
+- **Surname corrected** in `pyproject.toml` (Kelly → Kelley), completing the
+  fix already applied to `LICENSE` and `README.md` in the previous release.
+
+### Added
+
+- **`sources.py`, a citation register.** Every historical claim keys into it.
+  Each source carries a **tier** (what kind of source) and a **verification**
+  level (how far this release actually checked it).
+- **`tests/test_sources.py`, a static gate.** An uncited claim, an orphan
+  citation, a claim resting on a popular-tier source alone, or a
+  `bibliographic` source that fails to disclose that in its note — any of
+  these fails the build.
+- **`unverified_claims()` and `reading_list()`.** The library publishes its
+  own open reading list rather than implying books were read that were not.
+- **`EXECUTION_CHECKED`.** Separates claims the tests prove by execution from
+  claims that rest on citation. A round-tripping table is internally
+  consistent; that is not the same as matching the historical record.
+- **Encoders and decoders for all four systems**, with round-trip tests
+  across sampled ranges. v0.1.0 had letter-value lookups only.
+- **`hebrew.to_hebrew` honours the tet-vav / tet-zayin convention** for 15
+  and 16, including inside larger numbers.
+- **`arabic.ORDER`** declares that the eastern (mashriqi) order is
+  implemented, since the Maghrebi order assigns several later letters
+  different values and mixing them silently would corrupt a date reading.
+- **`sexagesimal.digit_wedges` and `wedge_layout`**, exposing the sub-base of
+  10 inside each base-60 digit.
+- **`interpretive.collision_demonstration`**, which proves from code why a
+  letter-sum cannot identify a word.
+- **`docs/SOURCES.md`**, generated by `tools/generate_sources_doc.py` from the
+  register. CI diffs it against a fresh generation so the two cannot drift.
+- **CI** on Python 3.10 through 3.13, running the suite, the citation gate
+  directly, and the generated-document check.
+- **Honest failure messages.** Every rejection names the offending character
+  and its code point, or the range it fell outside.
+
+### Test suite
+
+383 test cases, up from 64. The count is inflated by parametrization —
+`test_systems.py` round-trips each system across sampled ranges — so it
+should be read as coverage breadth, not as 383 distinct assertions.
+
+## [0.1.0] — 2026-09-03
+
+Initial publication, as *"Ancient Numerics Codex — five primordial
+mathematical traditions."* Superseded. The errors in this release are
+itemised above and in the README's correction notice; the tag is kept so the
+record stays legible.

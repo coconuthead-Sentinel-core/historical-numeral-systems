@@ -115,6 +115,11 @@ def reduce_to_root(text: str, script: str) -> int:
     return digital_root(letter_sum(text, script))
 
 
+# Permutation count grows factorially, so the input is capped rather than
+# left to the caller's optimism. 8! is 40320, which is cheap; 12! is not.
+MAX_PERMUTED_LETTERS = 8
+
+
 def equal_sum_variants(text: str, script: str, limit: int = 100) -> list[str]:
     """Rearrangements of ``text`` sharing its letter-sum. Stops at ``limit``.
 
@@ -122,8 +127,20 @@ def equal_sum_variants(text: str, script: str, limit: int = 100) -> list[str]:
     function exists to make that concrete: it is the reason a letter-sum
     cannot serve as a content fingerprint, and the reason this library does
     not derive identifiers from one.
+
+    Raises ValueError for inputs longer than ``MAX_PERMUTED_LETTERS``
+    scoring letters. Permutations grow factorially and a silent slowdown
+    would be worse than a refusal that says why.
     """
+    if limit < 1:
+        raise ValueError(f"limit must be at least 1; got {limit}.")
     letters = [c for c in text if letter_sum(c, script) > 0]
+    if len(letters) > MAX_PERMUTED_LETTERS:
+        raise ValueError(
+            f"{len(letters)} scoring letters would mean "
+            f"{len(letters)}! permutations. This demonstration caps at "
+            f"{MAX_PERMUTED_LETTERS}; pass a shorter word."
+        )
     seen: set[str] = set()
     out: list[str] = []
     for perm in permutations(letters):
